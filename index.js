@@ -29,7 +29,7 @@ eq3BTSmartPlatform.prototype = {
                     that.log('EQ3 - Found '+myBTDevices.length+' devices.');
                     noble.stopScanning();
 		    for ( var i = 0; i < myBTDevices.length; i++) {
-            		var accessory = new eq3BTSmartAccessory(that.log, myBTDevices[i],);
+            		var accessory = new eq3BTSmartAccessory(that.log, myBTDevices[i]);
 			myAccessories.push(accessory);
                     }
                     callback(myAccessories);
@@ -95,7 +95,7 @@ eq3BTSmartAccessory.prototype = {
             that.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;
             that.heatingCoolingState = Characteristic.CurrentHeatingCoolingState.OFF;
         }
-        console.log(value);
+        //console.log(value); -- debug
         that.device.disconnect();
         that.refreshing=0;
     },
