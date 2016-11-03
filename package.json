@@ -1,0 +1,41 @@
+{
+  "name": "homebridge-platform-eq3btsmart",
+  "version": "1.0.0",
+  "description": "EQ-3 Bluetooth Thermostat plugin for Homebridge",
+  "author": "Maciej Nowakowski",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/macnow/homebridge-platform-eq3btsmart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/macnow/homebridge-platform-eq3btsmart/issues",
+    "email": "macnow@gmail.com"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "eq-3",
+    "eq3",
+    "bluetooth",
+    "thermostat",
+    "home",
+    "heating"
+  ],
+  "engines": {
+    "node": ">=4.4.0",
+    "homebridge": ">=0.3.0"
+  },
+  "dependencies": {
+    "noble": "^1.7.0"
+  },
+  "devDependencies": {
+    "semistandard": "^9.0.0"
+  },
+  "scripts": {
+    "debug": "DEBUG=* homebridge --debug --plugin-path .",
+    "test": "./node_modules/.bin/semistandard",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
+  }
+}
