@@ -23,14 +23,14 @@ eq3BTSmartPlatform.prototype = {
 
         noble.on('stateChange', function(state) {
             if (state === 'poweredOn') {
-        	that.log('EQ3 - Discovering devices...');
+                that.log('EQ3 - Discovering devices...');
                 noble.startScanning();
                 setTimeout(function() {
                     that.log('EQ3 - Found '+myBTDevices.length+' devices.');
                     noble.stopScanning();
-		    for ( var i = 0; i < myBTDevices.length; i++) {
-            		var accessory = new eq3BTSmartAccessory(that.log, myBTDevices[i]);
-			myAccessories.push(accessory);
+                    for (var i = 0; i < myBTDevices.length; i++) {
+                        var accessory = new eq3BTSmartAccessory(that.log, myBTDevices[i]);
+                        myAccessories.push(accessory);
                     }
                     callback(myAccessories);
                 }, 15000);
@@ -38,11 +38,11 @@ eq3BTSmartPlatform.prototype = {
                 noble.stopScanning();
             }
         });
+        
         noble.on('discover', function(peripheral) {
-        if(peripheral.advertisement.localName=="CC-RT-BLE")
-        {
-            myBTDevices.push(peripheral);
-        }
+            if(peripheral.advertisement.localName=="CC-RT-BLE") {
+                myBTDevices.push(peripheral);
+            }
         });
     }
 }
@@ -100,8 +100,7 @@ eq3BTSmartAccessory.prototype = {
         that.refreshing=0;
     },
     refreshDevice: function() {
-        if(this.refreshing==0)
-        {
+        if(this.refreshing==0) {
             this.refreshing=1;
             this.command = Buffer.from([0x03]);
             this.device.connect();
@@ -109,24 +108,22 @@ eq3BTSmartAccessory.prototype = {
     },
     getCurrentHeatingCoolingState: function(callback) {
         this.refreshDevice();
-	callback(null, this.heatingCoolingState);
+        callback(null, this.heatingCoolingState);
     },
     getTargetHeatingCoolingState: function(callback) {
         this.refreshDevice();
-	callback(null, this.targetHeatingCoolingState);
+        callback(null, this.targetHeatingCoolingState);
     },
     setTargetHeatingCoolingState: function(value,callback) {
         var that = this;
-	if(value == 0)
-        {
+        if(value == 0) {
             this.log('EQ3 - '+this.name+' - Off');
             this.command = Buffer.from([0x41,0x09]);
             this.device.connect();
             this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;
             this.heatingCoolingState = Characteristic.CurrentHeatingCoolingState.OFF;
-	}
-	else if(value == 1)
-        {
+        }
+        else if(value == 1) {
             this.log('EQ3 - '+this.name+' - Day mode');
             this.command = Buffer.from([0x43]); // day mode
             this.device.connect();
@@ -136,7 +133,7 @@ eq3BTSmartAccessory.prototype = {
             }, 5000);
             this.targetHeatingCoolingState = 1;
         }
-	else if(value == 2)
+        else if(value == 2)
         {
             this.log('EQ3 - '+this.name+' - Night mode');
             this.command = Buffer.from([0x44]); // night mode
@@ -146,44 +143,41 @@ eq3BTSmartAccessory.prototype = {
                 that.device.connect();
             }, 5000);
             this.device.connect();
-            
             this.targetHeatingCoolingState = 2;
         }
-        else if(value == 3)
-        {
+        else if(value == 3) {
             this.log('EQ3 - '+this.name+' - Auto mode');
             this.command = Buffer.from([0x40,0x00]); // auto mode
             this.device.connect();
             this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;
             this.heatingCoolingState = Characteristic.CurrentHeatingCoolingState.HEAT;
         }
-	callback(null, value);
+        callback(null, value);
     },
     getCurrentTemperature: function(callback) {
         this.refreshDevice();
-	callback(null, this.temperature);
+        callback(null, this.temperature);
     },
     getTargetTemperature: function(callback) {
         this.refreshDevice();
-	callback(null, this.targetTemperature);
+        callback(null, this.targetTemperature);
     },
     setTargetTemperature: function(value, callback) {
         var that = this;
-	this.targetTemperature = value;
+        this.targetTemperature = value;
         setTimeout(function() {
-            if(that.targetTemperature != that.temperature)
-            {
+            if(that.targetTemperature != that.temperature) {
                 that.log('EQ3 - '+that.name+' - Setting new temperature '+that.temperature+' -> '+that.targetTemperature);
-		that.temperature=that.targetTemperature;
+                that.temperature=that.targetTemperature;
                 that.command = Buffer.from([0x41,that.targetTemperature*2]);
                 that.device.connect();
             }
         }, 3000);
-	callback(null, this.temperature);
+        callback(null, this.temperature);
     },
     getTemperatureDisplayUnits: function(callback) {
-	var error = null;
-	callback(error, this.temperatureDisplayUnits);
+        var error = null;
+        callback(error, this.temperatureDisplayUnits);
     },
     getServices: function() {
         var informationService = new Service.AccessoryInformation();
@@ -193,29 +187,29 @@ eq3BTSmartAccessory.prototype = {
     		.setCharacteristic(Characteristic.SerialNumber, this.device.address)
         
         var thermostatService = new Service.Thermostat(this.device.address);
-	thermostatService
-		.getCharacteristic(Characteristic.CurrentHeatingCoolingState)
-		.on('get', this.getCurrentHeatingCoolingState.bind(this));
+        thermostatService
+            .getCharacteristic(Characteristic.CurrentHeatingCoolingState)
+            .on('get', this.getCurrentHeatingCoolingState.bind(this));
 
-	thermostatService
-		.getCharacteristic(Characteristic.TargetHeatingCoolingState)
-		.on('get', this.getTargetHeatingCoolingState.bind(this))
-		.on('set', this.setTargetHeatingCoolingState.bind(this));
+        thermostatService
+            .getCharacteristic(Characteristic.TargetHeatingCoolingState)
+            .on('get', this.getTargetHeatingCoolingState.bind(this))
+            .on('set', this.setTargetHeatingCoolingState.bind(this));
 
-	thermostatService
-		.getCharacteristic(Characteristic.CurrentTemperature)
-		.on('get', this.getCurrentTemperature.bind(this));
+        thermostatService
+            .getCharacteristic(Characteristic.CurrentTemperature)
+            .on('get', this.getCurrentTemperature.bind(this));
 
-	thermostatService
-		.getCharacteristic(Characteristic.TargetTemperature)
-		.on('get', this.getTargetTemperature.bind(this))
-		.on('set', this.setTargetTemperature.bind(this));
+        thermostatService
+            .getCharacteristic(Characteristic.TargetTemperature)
+            .on('get', this.getTargetTemperature.bind(this))
+            .on('set', this.setTargetTemperature.bind(this));
 
-	thermostatService
-		.getCharacteristic(Characteristic.TemperatureDisplayUnits)
-		.on('get', this.getTemperatureDisplayUnits.bind(this));
+        thermostatService
+            .getCharacteristic(Characteristic.TemperatureDisplayUnits)
+            .on('get', this.getTemperatureDisplayUnits.bind(this));
 
-	return [informationService,thermostatService];
+        return [informationService,thermostatService];
     }
 }
 
