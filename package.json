@@ -27,7 +27,7 @@
     "homebridge": ">=0.3.0"
   },
   "dependencies": {
-    "noble": "^1.7.0"
+    "noble": "abandonware/noble"
   },
   "devDependencies": {
     "semistandard": "^9.0.0"
