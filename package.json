@@ -27,10 +27,10 @@
     "homebridge": ">=0.3.0"
   },
   "dependencies": {
-    "noble": "abandonware/noble"
+    "@abandonware/noble": "^1.9.2-15"
   },
   "devDependencies": {
-    "semistandard": "^9.0.0"
+    "semistandard": "^16.0.1"
   },
   "scripts": {
     "debug": "DEBUG=* homebridge --debug --plugin-path .",

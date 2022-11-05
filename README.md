@@ -5,13 +5,9 @@ EQ-3 Bluetooth Smart Thermostat plugin for [Homebridge](https://github.com/nfari
 # Installation
 
 1. Install Homebridge using: `sudo npm install -g homebridge`
-2. Install libusb, e.g. in Debian based OS's: sudo apt install libusb-dev
-2. Install this plugin using: `sudo npm install -g homebridge-platform-eq3btsmart --unsafe-perm`
+2. Install dependencies, e.g. in Debian based OS's: sudo apt install libusb-dev bluetooth bluez libbluetooth-dev libudev-dev
+2. Install this plugin from local clone using: `sudo npm install -g ./homebridge-platform-eq3btsmart --unsafe-perm`
 3. Update your configuration file. See the sample below.
-
-# Updating
-
-- `sudo npm update -g homebridge-platform-eq3btsmart`
 
 # Configuration
 
